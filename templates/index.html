@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container-fluid p-5">
+    <div class="row d-flex justify-content-center align-items-center" style="height: 500px">
+      <div class="col-6 d-flex justify-content-center">
+        <img src="{% static 'logo.png' %}" style="height: 300px; width: 200px">
+      </div>
+      <div class="col-6 text-center">
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem
+        aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo
+        enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos
+        qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet,
+        consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam
+        quaerat voluptatem.
+      </div>
+    </div>
+    <h1 class="text-center">View our properties</h1>
+    <div class="container-fluid">
+      <div class="row d-flex justify-content-between">
+        {% for property in properties %}
+          <div class="col-4 d-flex justify-content-center">
+            <div class="card" style="width: 18rem;">
+              <img src="{{ property.image.url }}" class="card-img-top" alt="...">
+              <div class="card-body">
+                <h2 class="card-title">{{ property.name }}</h2>
+                <p class="card-text">{{ property.area }}</p>
+                <hr>
+                <p class="card-text">{{ property.total_value }}</p>
+                <a href="/details/{{ property.pk }}" class="btn btn-danger">Details</a>
+                <a href="/edit_property/{{ property.pk }}" class="btn btn-warning">Edit</a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+
+      </div>
+    </div>
+  </div>
+{% endblock %}

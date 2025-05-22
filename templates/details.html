@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+  <div class="container-fluid p-5">
+
+    <h1 class="text-center">View our properties</h1>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-6">
+          <p>{{ property.name }}</p>
+          <p>{{ property.area }}</p>
+          <p>{{ total }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
