@@ -387,7 +387,6 @@ urlpatterns = [
 #### 6.3. add_property.html
 
 ```html
-add
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
