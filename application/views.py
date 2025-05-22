@@ -27,19 +27,19 @@ def add_property(request):
         form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return redirect("index.html")
+        return redirect("index")
 
     form = PropertyForm()
     return render(request, "add_property.html", context={"form": form})
 
 
 def edit_property(request, prop_id):
-    property = get_object_or_404(Property, pk=prop_id)
+    prop = get_object_or_404(Property, pk=prop_id)
     if request.method == 'POST':
-        form = PropertyForm(request.POST, request.FILES, instance=property)
+        form = PropertyForm(request.POST, request.FILES, instance=prop)
         if form.is_valid():
             form.save()
-        return redirect("index.html")
+        return redirect("index")
 
-    form = PropertyForm(instance=property)
-    return render(request, "add_property.html", context={"form": form, "prop_id":prop_id})
+    form = PropertyForm(instance=prop)
+    return render(request, "edit_property.html", context={"form": form, "prop_id": prop_id})

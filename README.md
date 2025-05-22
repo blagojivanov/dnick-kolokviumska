@@ -296,22 +296,22 @@ def add_property(request):
         form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-        return redirect("index.html")
+        return redirect("index")
 
     form = PropertyForm()
     return render(request, "add_property.html", context={"form": form})
 
 
 def edit_property(request, prop_id):
-    property = get_object_or_404(Property, pk=prop_id)
+    prop = get_object_or_404(Property, pk=prop_id)
     if request.method == 'POST':
-        form = PropertyForm(request.POST, request.FILES, instance=property)
+        form = PropertyForm(request.POST, request.FILES, instance=prop)
         if form.is_valid():
             form.save()
-        return redirect("index.html")
+        return redirect("index")
 
-    form = PropertyForm(instance=property)
-    return render(request, "add_property.html", context={"form": form, "prop_id": prop_id})
+    form = PropertyForm(instance=prop)
+    return render(request, "edit_property.html", context={"form": form, "prop_id": prop_id})
 ```
 
 ### 5.2. регистрирање во urls.py
@@ -461,7 +461,7 @@ urlpatterns = [
 <div class="container-fluid p-5">
   <div class="container-fluid">
     <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
-      <form method="post" action="{% url 'edit_flight' prop_id %}" enctype="multipart/form-data">
+      <form method="post" action="{% url 'edit_property' prop_id %}" enctype="multipart/form-data">
         {% csrf_token %}
         {{ form.as_p }}
         <button class="btn btn-primary" type="submit">Submit</button>

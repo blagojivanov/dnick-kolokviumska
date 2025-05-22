@@ -5,7 +5,7 @@
 
     <div class="container-fluid">
       <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
-        <form method="post" action="{% url 'edit_flight' prop_id %}" enctype="multipart/form-data">
+        <form method="post" action="{% url 'edit_property' prop_id %}" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form.as_p }}
           <button class="btn btn-primary" type="submit">Submit</button>
