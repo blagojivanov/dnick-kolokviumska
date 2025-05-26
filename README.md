@@ -272,9 +272,12 @@ class PropertyForm(forms.ModelForm):
 ```python
 from django.db.models import Sum
 from django.shortcuts import render, redirect, get_object_or_404
-from application.forms import PropertyForm
-from application.models import Property, PropertyCharacteristics
 
+from application.forms import PropertyForm
+from application.models import Property, PropertyCharacteristics, Characteristic
+
+
+# Create your views here.
 
 def index(request):
     properties = Property.objects.annotate(total_value=Sum('propertycharacteristics__characteristic__value'))
@@ -295,7 +298,13 @@ def add_property(request):
     if request.method == 'POST':
         form = PropertyForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            property = form.save()
+            characteristics = request.POST.get('characteristics')
+
+            characteristics_list = characteristics.split(",")
+            for charac in characteristics_list:
+                char = Characteristic.objects.filter(name=charac).get()
+                PropertyCharacteristics.objects.create(property=property, characteristic=char)
         return redirect("index")
 
     form = PropertyForm()
@@ -308,10 +317,21 @@ def edit_property(request, prop_id):
         form = PropertyForm(request.POST, request.FILES, instance=prop)
         if form.is_valid():
             form.save()
+            characteristics = request.POST.get('characteristics')
+
+            characteristics_list = characteristics.split(",")
+            for charac in characteristics_list:
+                char = Characteristic.objects.filter(name=charac).get()
+                PropertyCharacteristics.objects.create(property=prop, characteristic=char)
         return redirect("index")
 
     form = PropertyForm(instance=prop)
-    return render(request, "edit_property.html", context={"form": form, "prop_id": prop_id})
+    characteristics = PropertyCharacteristics.objects.filter(property=prop)
+    char_str = ""
+    for char in characteristics:
+        char_str+=char.characteristic.name+","
+
+    return render(request, "edit_property.html", context={"form": form, "prop_id": prop_id, "char_str":char_str})
 ```
 
 ### 5.2. регистрирање во urls.py
@@ -436,19 +456,20 @@ urlpatterns = [
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container-fluid p-5">
+  <div class="container-fluid p-5">
 
-
-  <div class="container-fluid">
-    <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
-      <form method="post" action="{% url 'add_property' %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </form>
+    <div class="container-fluid">
+      <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
+        <form method="post" action="{% url 'add_property' %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <label for="characteristics">Characteristics</label>
+          <input type="text" name="characteristics" id="characteristics" class="form-control"/>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}
 ```
 
@@ -458,17 +479,21 @@ urlpatterns = [
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<div class="container-fluid p-5">
-  <div class="container-fluid">
-    <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
-      <form method="post" action="{% url 'edit_property' prop_id %}" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button class="btn btn-primary" type="submit">Submit</button>
-      </form>
+  <div class="container-fluid p-5">
+
+    <div class="container-fluid">
+      <div class="py-5 d-flex justify-content-center bg-secondary-subtle">
+        <form method="post" action="{% url 'edit_property' prop_id %}" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form.as_p }}
+          <label for="characteristics">Characteristics</label>
+          <input type="text" name="characteristics" id="characteristics" class="form-control"
+                 placeholder="{{ char_str }}"/>
+          <button class="btn btn-primary" type="submit">Submit</button>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}
 ```
 

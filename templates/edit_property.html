@@ -8,6 +8,9 @@
         <form method="post" action="{% url 'edit_property' prop_id %}" enctype="multipart/form-data">
           {% csrf_token %}
           {{ form.as_p }}
+          <label for="characteristics">Characteristics</label>
+          <input type="text" name="characteristics" id="characteristics" class="form-control"
+                 placeholder="{{ char_str }}"/>
           <button class="btn btn-primary" type="submit">Submit</button>
         </form>
       </div>
